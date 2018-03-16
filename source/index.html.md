@@ -42,65 +42,7 @@ We expects for the JWT to be included in all API requests to the server in a hea
 
 # Building expenses
 
-## Flat expenses simulation object
-
-
-> Example simulation response
-
-```json
-{
-  "accuracy": 4,
-  "current_expenses": 2000,
-  "expected_expenses": 1000,
-  "potential_saving": 1000,
-  "label": {
-    "A": {"min": 0, "max": 400},
-    "B": {"min": 401, "max": 600},
-    "C": {"min": 601, "max": 800},
-    "D": {"min": 801, "max": 1000},
-    "E": {"min": 1001, "max": 1200},
-    "F": {"min": 1201, "max": 1500},
-    "G": {"min": 1501}
-  }
-}
-```
-
-Attributes | Description
---------- | -----------
-current_expenses |  Current building expenses of the flat.
-expected_expenses |  The building expenses the simulator expects.
-potential_saving | The potential saving on the flat expenses.
-accuracy | Accuracy of the simulator from 1 (not accurate) to 5 (very accurate).
-label | Label object with expenses grades from A to G.
-
-
-## Expenses label
-
-> Example of a label
-
-```json
-{
-  "A": {"min": 0, "max": 400},
-  "B": {"min": 401, "max": 600},
-  "C": {"min": 601, "max": 800},
-  "D": {"min": 801, "max": 1000},
-  "E": {"min": 1001, "max": 1200},
-  "F": {"min": 1201, "max": 1500},
-  "G": {"min": 1501}
-}
-```
-
-Attributes | Description
---------- | -----------
-A |  Expenses range for grade A
-B |  Expenses range for grade B
-C |  Expenses range for grade C
-D |  Expenses range for grade D
-E |  Expenses range for grade E
-F |  Expenses range for grade F
-G |  Expenses range for grade G
-
-## Simulate expenses
+## Simulate flat expenses
 
 ```curl
 curl -X POST https://api.meilleurecopro.com/v1/building-expenses/simulate
@@ -130,7 +72,7 @@ curl -X POST https://api.meilleurecopro.com/v1/building-expenses/simulate
 }
 ```
 
-This endpoint simulate expenses for a given flat and returns what expenses the owner should pay and the grade of its expenses.
+This endpoint simulate building expenses for a given flat and returns what expenses the owner should pay and the grade of its expenses.
 
 
 ### HTTP Request
@@ -160,4 +102,61 @@ green_spaces  | number | false | Size of garden / green spaces from 1 to 5.
 syndic_type | string |false | PRO or VOLUNTEER.
 
 
+### Simulation response object
+
+
+> Example simulation response
+
+```json
+{
+  "accuracy": 4,
+  "current_expenses": 2000,
+  "expected_expenses": 1000,
+  "potential_saving": 1000,
+  "label": {
+    "A": {"min": 0, "max": 400},
+    "B": {"min": 401, "max": 600},
+    "C": {"min": 601, "max": 800},
+    "D": {"min": 801, "max": 1000},
+    "E": {"min": 1001, "max": 1200},
+    "F": {"min": 1201, "max": 1500},
+    "G": {"min": 1501}
+  }
+}
+```
+
+Attributes | Description
+--------- | -----------
+current_expenses |  Current building expenses of the flat.
+expected_expenses |  The building expenses the simulator expects.
+potential_saving | The potential saving on the flat expenses.
+accuracy | Accuracy of the simulator from 1 (not accurate) to 5 (very accurate).
+label | Label object with expenses grades from A to G described below.
+
+
+### Expenses label
+
+> Example of a label
+
+```json
+{
+  "A": {"min": 0, "max": 400},
+  "B": {"min": 401, "max": 600},
+  "C": {"min": 601, "max": 800},
+  "D": {"min": 801, "max": 1000},
+  "E": {"min": 1001, "max": 1200},
+  "F": {"min": 1201, "max": 1500},
+  "G": {"min": 1501}
+}
+```
+
+Attributes | Description
+--------- | -----------
+A |  Expenses range for grade A
+B |  Expenses range for grade B
+C |  Expenses range for grade C
+D |  Expenses range for grade D
+E |  Expenses range for grade E
+F |  Expenses range for grade F
+G |  Expenses range for grade G
 
