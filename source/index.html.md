@@ -102,10 +102,10 @@ green_spaces  | number | false | Size of garden / green spaces from 1 to 5.
 syndic_type | string |false | PRO or VOLUNTEER.
 
 
-### Simulation response object
+### Simulation response
 
 
-> Example simulation response
+> Example of a simulation response
 
 ```json
 {
@@ -134,9 +134,9 @@ accuracy | Accuracy of the simulator from 1 (not accurate) to 5 (very accurate).
 label | Label object with expenses grades from A to G described below.
 
 
-### Expenses label
+### Expenses label object
 
-> Example of a label
+> Example of a label object
 
 ```json
 {
