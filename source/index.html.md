@@ -1,5 +1,5 @@
 ---
-title: API Reference
+title: MeilleureCopro API Reference
 
 language_tabs: # must be one of https://git.io/vQNgJ
   - curl
@@ -13,7 +13,11 @@ includes:
 search: true
 ---
 
-# API Reference
+# MeilleureCopro API Reference
+
+This website documents the public API for [MeilleureCopro](https://www.meilleurecopro.com).
+
+You can view code examples in the dark area to the right. If anything is missing or seems incorrect, please check the [GitHub issues](https://github.com/MeilleureCopro/api-docs/issues) for existing known issues or [create a new issue](https://github.com/MeilleureCopro/api-docs/issues/new).
 
 MeilleureCopro API is organized around REST. We use HTTP response codes to indicate API error. JSON is returned by all API responses, including errors.
 
@@ -25,7 +29,7 @@ https://api.meilleurecopro.com
 
 # Authentication
 
-Authenticate your account when using the API by including your secret API key in the request. Authentication to the API is performed via a Json Web Token put in Authorization header.
+Authentication to the API is performed via JWT (Json Web Token) put in Authorization header.
 
 > To authorize, use this code:
 
@@ -36,20 +40,27 @@ curl "https://api.meilleurecopro.com/v1/echo"
 
 > Make sure to replace `JWT` with your API token.
 
-We expects for the JWT to be included in all API requests to the server in a header that looks like the following:
+We expects the JWT to be included in all API requests to the server in a header that looks like the following:
 
 `Authorization: Bearer JWT`
 
-# Building expenses
+# Building expenses estimation
 
-## Simulate flat expenses
+Our API estimate building expenses and provide an "expenses label" for a given building or given flat. 
+The following image summarize the main results : there are 7 ratings from A to G and the expenses here are rate E.
+ 
+![alt text](/images/label-example-small.png "Label example")
+
+## Estimate flat expenses
+
+
 
 ```curl
-curl -X POST https://api.meilleurecopro.com/v1/building-expenses/simulate
+curl -X POST https://api.meilleurecopro.com/v1/building-expenses/estimate
   -H "Authorization: Bearer JWT"
   -d '{"address":"5 Parvis Alan Turing 75013 Paris", "surface": 50, "expenses": 2000,  \
-  "elevator": true, "caretaker": false, "heating_type": "COLLECTIVE", \
-  "water_heating_type": "INDIVIDUAL"}'
+  "elevator": true, "caretaker": false, "construction_year": 1900, "heating_type": "COLLECTIVE", \
+  "water_heating_type": "INDIVIDUAL", "zip_code": "75013"}'
 ```
 
 > The above command returns JSON structured like this:
@@ -57,49 +68,53 @@ curl -X POST https://api.meilleurecopro.com/v1/building-expenses/simulate
 ```json
 {
   "accuracy": 4,
-  "current_expenses": 2000,
   "expected_expenses": 1000,
-  "potential_saving": 1000,
   "label": {
-    "A": {"min": 0, "max": 400},
-    "B": {"min": 401, "max": 600},
-    "C": {"min": 601, "max": 800},
-    "D": {"min": 801, "max": 1000},
-    "E": {"min": 1001, "max": 1200},
-    "F": {"min": 1201, "max": 1500},
-    "G": {"min": 1501}
-  }
+    "rating": "G",
+    "current_expenses": 2000,
+    "a": {"min": 0, "max": 400},
+    "b": {"min": 401, "max": 600},
+    "c": {"min": 601, "max": 800},
+    "d": {"min": 801, "max": 1000},
+    "e": {"min": 1001, "max": 1200},
+    "f": {"min": 1201, "max": 1500},
+    "g": {"min": 1501}
+  },
+  "label_image_data": "..."
 }
 ```
 
-This endpoint simulate building expenses for a given flat and returns what expenses the owner should pay and the grade of its expenses.
+This endpoint estimate building expenses for a given flat and returns what expenses the owner should pay and the rating of its expenses.
 
 
 ### HTTP Request
 
-`POST https://api.meilleurecopro.com/v1/building-expenses/simulate`
+`POST https://api.meilleurecopro.com/v1/building-expenses/estimate`
 
 ### Body parameters
 
 Parameter | Type | Required | Description
 --------- | ------- | ------- | -----------
-address | string | true if insee_code is not present | Address of the flat.
-insee_code | string | true if address is not present | Insee code of the flat.
 expenses | number | true | Current building expenses.
 surface | number |true | Flat surface.
 elevator | boolean |true | Elevator in the building.
-caretaker| boolean |true | Caretaker in the building.
-heating_type | string | true | COLLECTIVE or INDIVIDUAL.
-room_count | number | false | Flat room count.
+lot_count | number |true| Number of flat in the building.
+construction_year | number | true | Construction year (approximative) of the building.
+zip_code | string | true | Insee code of the flat.
+insee_code | string | true if zip_code not present | Insee code of the flat.
+description | string | false | Text description of the flat.
+caretaker| boolean |required if no description | Caretaker in the building.
+heating_type | string | required if no description | COLLECTIVE or INDIVIDUAL.
 water_heating_type | string |false | COLLECTIVE or INDIVIDUAL.
-construction_year | number |false | Construction year (approximative) of the building.
-lot_count | number |false | Number of flat in the building.
-floor | number |false | Flat floor.
-floor_count | number |false | Building floor count.
-parking | boolean |false | Flat with parking.
-parking_count | number |false | Flat parking count.
-green_spaces  | number | false | Size of garden / green spaces from 1 to 5.
 syndic_type | string |false | PRO or VOLUNTEER.
+green_space  | string | false | Size of green space: NONE, SMALL, NORMAL, BIG.
+parking_count | number |false | Flat parking count.
+floor_count | number |false | Building floor count.
+floor | number |false | Flat floor.
+room_count | number | false | Flat room count.
+address | string | false | Address of the flat.
+latitude | number | false | Latitude of the flat.
+longitude | number | false | Longitude of the flat.
 
 
 ### Simulation response
@@ -110,29 +125,30 @@ syndic_type | string |false | PRO or VOLUNTEER.
 ```json
 {
   "accuracy": 4,
-  "current_expenses": 2000,
   "expected_expenses": 1000,
-  "potential_saving": 1000,
   "label": {
-    "A": {"min": 0, "max": 400},
-    "B": {"min": 401, "max": 600},
-    "C": {"min": 601, "max": 800},
-    "D": {"min": 801, "max": 1000},
-    "E": {"min": 1001, "max": 1200},
-    "F": {"min": 1201, "max": 1500},
-    "G": {"min": 1501}
-  }
+    "rating": "G"
+    "current_expenses": 2000,
+    "a": {"min": 0, "max": 400},
+    "b": {"min": 401, "max": 600},
+    "c": {"min": 601, "max": 800},
+    "d": {"min": 801, "max": 1000},
+    "e": {"min": 1001, "max": 1200},
+    "f": {"min": 1201, "max": 1500},
+    "g": {"min": 1501},
+  },
+  "label_image_data": ""
 }
 ```
 
 Attributes | Description
 --------- | -----------
-current_expenses |  Current building expenses of the flat.
 expected_expenses |  The building expenses the simulator expects.
-potential_saving | The potential saving on the flat expenses.
 accuracy | Accuracy of the simulator from 1 (not accurate) to 5 (very accurate).
-label | Label object with expenses grades from A to G described below.
+label | Label object with expenses ratings from A to G described below.
+label_image_data | label image base64 encoded of size 285x250 such as below
 
+![alt text](/images/label-example.png "Label example")
 
 ### Expenses label object
 
@@ -140,23 +156,27 @@ label | Label object with expenses grades from A to G described below.
 
 ```json
 {
-  "A": {"min": 0, "max": 400},
-  "B": {"min": 401, "max": 600},
-  "C": {"min": 601, "max": 800},
-  "D": {"min": 801, "max": 1000},
-  "E": {"min": 1001, "max": 1200},
-  "F": {"min": 1201, "max": 1500},
-  "G": {"min": 1501}
+  "rating": "G"
+  "current_expenses": 2000,
+  "a": {"min": 0, "max": 400},
+  "b": {"min": 401, "max": 600},
+  "c": {"min": 601, "max": 800},
+  "d": {"min": 801, "max": 1000},
+  "e": {"min": 1001, "max": 1200},
+  "f": {"min": 1201, "max": 1500},
+  "g": {"min": 1501},
 }
 ```
 
 Attributes | Description
 --------- | -----------
-A |  Expenses range for grade A
-B |  Expenses range for grade B
-C |  Expenses range for grade C
-D |  Expenses range for grade D
-E |  Expenses range for grade E
-F |  Expenses range for grade F
-G |  Expenses range for grade G
+rating | Rating of the current expenses (A -> G)
+current_expenses | The current expenses
+a |  Expenses range for rating A
+b |  Expenses range for rating B
+c |  Expenses range for rating C
+d |  Expenses range for rating D
+e |  Expenses range for rating E
+f |  Expenses range for rating F
+g |  Expenses range for rating G
 
