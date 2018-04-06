@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>API Reference</title>
+    <title>MeilleureCopro API Reference</title>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <link rel="shortcut icon" href="favicon.ico">
     <style>
@@ -218,16 +218,16 @@
         </div>
       <div id="toc" class="toc-list-h1">
           <li>
-            <a href="#api-reference" class="toc-h1 toc-link" data-title="api-reference">API Reference</a>
+            <a href="#meilleurecopro-api-reference" class="toc-h1 toc-link" data-title="meilleurecopro-api-reference">MeilleureCopro API Reference</a>
           </li>
           <li>
             <a href="#authentication" class="toc-h1 toc-link" data-title="authentication">Authentication</a>
           </li>
           <li>
-            <a href="#building-expenses" class="toc-h1 toc-link" data-title="building-expenses">Building expenses</a>
+            <a href="#building-expenses-estimation" class="toc-h1 toc-link" data-title="building-expenses-estimation">Building expenses estimation</a>
               <ul class="toc-list-h2">
                   <li>
-                    <a href="#simulate-flat-expenses" class="toc-h2 toc-link" data-title="simulate-flat-expenses">Simulate flat expenses</a>
+                    <a href="#estimate-flat-expenses" class="toc-h2 toc-link" data-title="estimate-flat-expenses">Estimate flat expenses</a>
                   </li>
               </ul>
           </li>
@@ -242,7 +242,11 @@
     <div class="page-wrapper">
       <div class="dark-box"></div>
       <div class="content">
-        <h1 id='api-reference'>API Reference</h1>
+        <h1 id='meilleurecopro-api-reference'>MeilleureCopro API Reference</h1>
+<p>This website documents the public API for <a href="https://www.meilleurecopro.com">MeilleureCopro</a>.</p>
+
+<p>You can view code examples in the dark area to the right. If anything is missing or seems incorrect, please check the <a href="https://github.com/MeilleureCopro/api-docs/issues">GitHub issues</a> for existing known issues or <a href="https://github.com/MeilleureCopro/api-docs/issues/new">create a new issue</a>.</p>
+
 <p>MeilleureCopro API is organized around REST. We use HTTP response codes to indicate API error. JSON is returned by all API responses, including errors.</p>
 
 <blockquote>
@@ -252,7 +256,7 @@ https://api.meilleurecopro.com
 </code></p>
 </blockquote>
 <h1 id='authentication'>Authentication</h1>
-<p>Authenticate your account when using the API by including your secret API key in the request. Authentication to the API is performed via a Json Web Token put in Authorization header.</p>
+<p>Authentication to the API is performed via JWT (Json Web Token) put in Authorization header.</p>
 
 <blockquote>
 <p>To authorize, use this code:</p>
@@ -264,37 +268,43 @@ https://api.meilleurecopro.com
 <p>Make sure to replace <code>JWT</code> with your API token.</p>
 </blockquote>
 
-<p>We expects for the JWT to be included in all API requests to the server in a header that looks like the following:</p>
+<p>We expects the JWT to be included in all API requests to the server in a header that looks like the following:</p>
 
 <p><code>Authorization: Bearer JWT</code></p>
-<h1 id='building-expenses'>Building expenses</h1><h2 id='simulate-flat-expenses'>Simulate flat expenses</h2><pre class="highlight plaintext"><code>curl -X POST https://api.meilleurecopro.com/v1/building-expenses/simulate
+<h1 id='building-expenses-estimation'>Building expenses estimation</h1>
+<p>Our API estimate building expenses and provide an &quot;expenses label&quot; for a given building or given flat. 
+The following image summarize the main results : there are 7 ratings from A to G and the expenses here are rate E.</p>
+
+<p><img src="images/label-example-small.png" title="Label example" alt="alt text" /></p>
+<h2 id='estimate-flat-expenses'>Estimate flat expenses</h2><pre class="highlight plaintext"><code>curl -X POST https://api.meilleurecopro.com/v1/building-expenses/estimate
   -H "Authorization: Bearer JWT"
   -d '{"address":"5 Parvis Alan Turing 75013 Paris", "surface": 50, "expenses": 2000,  \
-  "elevator": true, "caretaker": false, "heating_type": "COLLECTIVE", \
-  "water_heating_type": "INDIVIDUAL"}'
+  "elevator": true, "caretaker": false, "construction_year": 1900, "heating_type": "COLLECTIVE", \
+  "water_heating_type": "INDIVIDUAL", "zip_code": "75013"}'
 </code></pre>
 <blockquote>
 <p>The above command returns JSON structured like this:</p>
 </blockquote>
 <pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
   </span><span class="s2">"accuracy"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"current_expenses"</span><span class="p">:</span><span class="w"> </span><span class="mi">2000</span><span class="p">,</span><span class="w">
   </span><span class="s2">"expected_expenses"</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"potential_saving"</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span><span class="w">
   </span><span class="s2">"label"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="s2">"A"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s2">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">400</span><span class="p">},</span><span class="w">
-    </span><span class="s2">"B"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">401</span><span class="p">,</span><span class="w"> </span><span class="s2">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">600</span><span class="p">},</span><span class="w">
-    </span><span class="s2">"C"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">601</span><span class="p">,</span><span class="w"> </span><span class="s2">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">800</span><span class="p">},</span><span class="w">
-    </span><span class="s2">"D"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">801</span><span class="p">,</span><span class="w"> </span><span class="s2">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">},</span><span class="w">
-    </span><span class="s2">"E"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">1001</span><span class="p">,</span><span class="w"> </span><span class="s2">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">1200</span><span class="p">},</span><span class="w">
-    </span><span class="s2">"F"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">1201</span><span class="p">,</span><span class="w"> </span><span class="s2">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">1500</span><span class="p">},</span><span class="w">
-    </span><span class="s2">"G"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">1501</span><span class="p">}</span><span class="w">
-  </span><span class="p">}</span><span class="w">
+    </span><span class="s2">"rating"</span><span class="p">:</span><span class="w"> </span><span class="s2">"G"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"current_expenses"</span><span class="p">:</span><span class="w"> </span><span class="mi">2000</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"a"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s2">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">400</span><span class="p">},</span><span class="w">
+    </span><span class="s2">"b"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">401</span><span class="p">,</span><span class="w"> </span><span class="s2">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">600</span><span class="p">},</span><span class="w">
+    </span><span class="s2">"c"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">601</span><span class="p">,</span><span class="w"> </span><span class="s2">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">800</span><span class="p">},</span><span class="w">
+    </span><span class="s2">"d"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">801</span><span class="p">,</span><span class="w"> </span><span class="s2">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">},</span><span class="w">
+    </span><span class="s2">"e"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">1001</span><span class="p">,</span><span class="w"> </span><span class="s2">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">1200</span><span class="p">},</span><span class="w">
+    </span><span class="s2">"f"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">1201</span><span class="p">,</span><span class="w"> </span><span class="s2">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">1500</span><span class="p">},</span><span class="w">
+    </span><span class="s2">"g"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">1501</span><span class="p">}</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="s2">"label_image_data"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
-<p>This endpoint simulate building expenses for a given flat and returns what expenses the owner should pay and the grade of its expenses.</p>
+<p>This endpoint estimate building expenses for a given flat and returns what expenses the owner should pay and the rating of its expenses.</p>
 <h3 id='http-request'>HTTP Request</h3>
-<p><code>POST https://api.meilleurecopro.com/v1/building-expenses/simulate</code></p>
+<p><code>POST https://api.meilleurecopro.com/v1/building-expenses/estimate</code></p>
 <h3 id='body-parameters'>Body parameters</h3>
 <table><thead>
 <tr>
@@ -304,18 +314,6 @@ https://api.meilleurecopro.com
 <th>Description</th>
 </tr>
 </thead><tbody>
-<tr>
-<td>address</td>
-<td>string</td>
-<td>true if insee_code is not present</td>
-<td>Address of the flat.</td>
-</tr>
-<tr>
-<td>insee_code</td>
-<td>string</td>
-<td>true if address is not present</td>
-<td>Insee code of the flat.</td>
-</tr>
 <tr>
 <td>expenses</td>
 <td>number</td>
@@ -335,22 +333,46 @@ https://api.meilleurecopro.com
 <td>Elevator in the building.</td>
 </tr>
 <tr>
+<td>lot_count</td>
+<td>number</td>
+<td>true</td>
+<td>Number of flat in the building.</td>
+</tr>
+<tr>
+<td>construction_year</td>
+<td>number</td>
+<td>true</td>
+<td>Construction year (approximative) of the building.</td>
+</tr>
+<tr>
+<td>zip_code</td>
+<td>string</td>
+<td>true</td>
+<td>Insee code of the flat.</td>
+</tr>
+<tr>
+<td>insee_code</td>
+<td>string</td>
+<td>true if zip_code not present</td>
+<td>Insee code of the flat.</td>
+</tr>
+<tr>
+<td>description</td>
+<td>string</td>
+<td>false</td>
+<td>Text description of the flat.</td>
+</tr>
+<tr>
 <td>caretaker</td>
 <td>boolean</td>
-<td>true</td>
+<td>required if no description</td>
 <td>Caretaker in the building.</td>
 </tr>
 <tr>
 <td>heating_type</td>
 <td>string</td>
-<td>true</td>
+<td>required if no description</td>
 <td>COLLECTIVE or INDIVIDUAL.</td>
-</tr>
-<tr>
-<td>room_count</td>
-<td>number</td>
-<td>false</td>
-<td>Flat room count.</td>
 </tr>
 <tr>
 <td>water_heating_type</td>
@@ -359,34 +381,16 @@ https://api.meilleurecopro.com
 <td>COLLECTIVE or INDIVIDUAL.</td>
 </tr>
 <tr>
-<td>construction_year</td>
-<td>number</td>
+<td>syndic_type</td>
+<td>string</td>
 <td>false</td>
-<td>Construction year (approximative) of the building.</td>
+<td>PRO or VOLUNTEER.</td>
 </tr>
 <tr>
-<td>lot_count</td>
-<td>number</td>
+<td>green_space</td>
+<td>string</td>
 <td>false</td>
-<td>Number of flat in the building.</td>
-</tr>
-<tr>
-<td>floor</td>
-<td>number</td>
-<td>false</td>
-<td>Flat floor.</td>
-</tr>
-<tr>
-<td>floor_count</td>
-<td>number</td>
-<td>false</td>
-<td>Building floor count.</td>
-</tr>
-<tr>
-<td>parking</td>
-<td>boolean</td>
-<td>false</td>
-<td>Flat with parking.</td>
+<td>Size of green space: NONE, SMALL, NORMAL, BIG.</td>
 </tr>
 <tr>
 <td>parking_count</td>
@@ -395,16 +399,40 @@ https://api.meilleurecopro.com
 <td>Flat parking count.</td>
 </tr>
 <tr>
-<td>green_spaces</td>
+<td>floor_count</td>
 <td>number</td>
 <td>false</td>
-<td>Size of garden / green spaces from 1 to 5.</td>
+<td>Building floor count.</td>
 </tr>
 <tr>
-<td>syndic_type</td>
+<td>floor</td>
+<td>number</td>
+<td>false</td>
+<td>Flat floor.</td>
+</tr>
+<tr>
+<td>room_count</td>
+<td>number</td>
+<td>false</td>
+<td>Flat room count.</td>
+</tr>
+<tr>
+<td>address</td>
 <td>string</td>
 <td>false</td>
-<td>PRO or VOLUNTEER.</td>
+<td>Address of the flat.</td>
+</tr>
+<tr>
+<td>latitude</td>
+<td>number</td>
+<td>false</td>
+<td>Latitude of the flat.</td>
+</tr>
+<tr>
+<td>longitude</td>
+<td>number</td>
+<td>false</td>
+<td>Longitude of the flat.</td>
 </tr>
 </tbody></table>
 <h3 id='simulation-response'>Simulation response</h3>
@@ -413,18 +441,19 @@ https://api.meilleurecopro.com
 </blockquote>
 <pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
   </span><span class="s2">"accuracy"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"current_expenses"</span><span class="p">:</span><span class="w"> </span><span class="mi">2000</span><span class="p">,</span><span class="w">
   </span><span class="s2">"expected_expenses"</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span><span class="w">
-  </span><span class="s2">"potential_saving"</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span><span class="w">
   </span><span class="s2">"label"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="s2">"A"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s2">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">400</span><span class="p">},</span><span class="w">
-    </span><span class="s2">"B"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">401</span><span class="p">,</span><span class="w"> </span><span class="s2">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">600</span><span class="p">},</span><span class="w">
-    </span><span class="s2">"C"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">601</span><span class="p">,</span><span class="w"> </span><span class="s2">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">800</span><span class="p">},</span><span class="w">
-    </span><span class="s2">"D"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">801</span><span class="p">,</span><span class="w"> </span><span class="s2">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">},</span><span class="w">
-    </span><span class="s2">"E"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">1001</span><span class="p">,</span><span class="w"> </span><span class="s2">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">1200</span><span class="p">},</span><span class="w">
-    </span><span class="s2">"F"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">1201</span><span class="p">,</span><span class="w"> </span><span class="s2">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">1500</span><span class="p">},</span><span class="w">
-    </span><span class="s2">"G"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">1501</span><span class="p">}</span><span class="w">
-  </span><span class="p">}</span><span class="w">
+    </span><span class="s2">"rating"</span><span class="p">:</span><span class="w"> </span><span class="s2">"G"</span><span class="w">
+    </span><span class="s2">"current_expenses"</span><span class="p">:</span><span class="w"> </span><span class="mi">2000</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"a"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s2">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">400</span><span class="p">},</span><span class="w">
+    </span><span class="s2">"b"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">401</span><span class="p">,</span><span class="w"> </span><span class="s2">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">600</span><span class="p">},</span><span class="w">
+    </span><span class="s2">"c"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">601</span><span class="p">,</span><span class="w"> </span><span class="s2">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">800</span><span class="p">},</span><span class="w">
+    </span><span class="s2">"d"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">801</span><span class="p">,</span><span class="w"> </span><span class="s2">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">},</span><span class="w">
+    </span><span class="s2">"e"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">1001</span><span class="p">,</span><span class="w"> </span><span class="s2">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">1200</span><span class="p">},</span><span class="w">
+    </span><span class="s2">"f"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">1201</span><span class="p">,</span><span class="w"> </span><span class="s2">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">1500</span><span class="p">},</span><span class="w">
+    </span><span class="s2">"g"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">1501</span><span class="p">},</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="s2">"label_image_data"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 <table><thead>
@@ -434,16 +463,8 @@ https://api.meilleurecopro.com
 </tr>
 </thead><tbody>
 <tr>
-<td>current_expenses</td>
-<td>Current building expenses of the flat.</td>
-</tr>
-<tr>
 <td>expected_expenses</td>
 <td>The building expenses the simulator expects.</td>
-</tr>
-<tr>
-<td>potential_saving</td>
-<td>The potential saving on the flat expenses.</td>
 </tr>
 <tr>
 <td>accuracy</td>
@@ -451,21 +472,29 @@ https://api.meilleurecopro.com
 </tr>
 <tr>
 <td>label</td>
-<td>Label object with expenses grades from A to G described below.</td>
+<td>Label object with expenses ratings from A to G described below.</td>
+</tr>
+<tr>
+<td>label_image_data</td>
+<td>label image base64 encoded of size 285x250 such as below</td>
 </tr>
 </tbody></table>
+
+<p><img src="images/label-example.png" title="Label example" alt="alt text" /></p>
 <h3 id='expenses-label-object'>Expenses label object</h3>
 <blockquote>
 <p>Example of a label object</p>
 </blockquote>
 <pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
-  </span><span class="s2">"A"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s2">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">400</span><span class="p">},</span><span class="w">
-  </span><span class="s2">"B"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">401</span><span class="p">,</span><span class="w"> </span><span class="s2">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">600</span><span class="p">},</span><span class="w">
-  </span><span class="s2">"C"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">601</span><span class="p">,</span><span class="w"> </span><span class="s2">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">800</span><span class="p">},</span><span class="w">
-  </span><span class="s2">"D"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">801</span><span class="p">,</span><span class="w"> </span><span class="s2">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">},</span><span class="w">
-  </span><span class="s2">"E"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">1001</span><span class="p">,</span><span class="w"> </span><span class="s2">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">1200</span><span class="p">},</span><span class="w">
-  </span><span class="s2">"F"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">1201</span><span class="p">,</span><span class="w"> </span><span class="s2">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">1500</span><span class="p">},</span><span class="w">
-  </span><span class="s2">"G"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">1501</span><span class="p">}</span><span class="w">
+  </span><span class="s2">"rating"</span><span class="p">:</span><span class="w"> </span><span class="s2">"G"</span><span class="w">
+  </span><span class="s2">"current_expenses"</span><span class="p">:</span><span class="w"> </span><span class="mi">2000</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"a"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s2">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">400</span><span class="p">},</span><span class="w">
+  </span><span class="s2">"b"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">401</span><span class="p">,</span><span class="w"> </span><span class="s2">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">600</span><span class="p">},</span><span class="w">
+  </span><span class="s2">"c"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">601</span><span class="p">,</span><span class="w"> </span><span class="s2">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">800</span><span class="p">},</span><span class="w">
+  </span><span class="s2">"d"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">801</span><span class="p">,</span><span class="w"> </span><span class="s2">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">},</span><span class="w">
+  </span><span class="s2">"e"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">1001</span><span class="p">,</span><span class="w"> </span><span class="s2">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">1200</span><span class="p">},</span><span class="w">
+  </span><span class="s2">"f"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">1201</span><span class="p">,</span><span class="w"> </span><span class="s2">"max"</span><span class="p">:</span><span class="w"> </span><span class="mi">1500</span><span class="p">},</span><span class="w">
+  </span><span class="s2">"g"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="s2">"min"</span><span class="p">:</span><span class="w"> </span><span class="mi">1501</span><span class="p">},</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 <table><thead>
@@ -475,32 +504,40 @@ https://api.meilleurecopro.com
 </tr>
 </thead><tbody>
 <tr>
-<td>A</td>
-<td>Expenses range for grade A</td>
+<td>rating</td>
+<td>Rating of the current expenses (A -&gt; G)</td>
 </tr>
 <tr>
-<td>B</td>
-<td>Expenses range for grade B</td>
+<td>current_expenses</td>
+<td>The current expenses</td>
 </tr>
 <tr>
-<td>C</td>
-<td>Expenses range for grade C</td>
+<td>a</td>
+<td>Expenses range for rating A</td>
 </tr>
 <tr>
-<td>D</td>
-<td>Expenses range for grade D</td>
+<td>b</td>
+<td>Expenses range for rating B</td>
 </tr>
 <tr>
-<td>E</td>
-<td>Expenses range for grade E</td>
+<td>c</td>
+<td>Expenses range for rating C</td>
 </tr>
 <tr>
-<td>F</td>
-<td>Expenses range for grade F</td>
+<td>d</td>
+<td>Expenses range for rating D</td>
 </tr>
 <tr>
-<td>G</td>
-<td>Expenses range for grade G</td>
+<td>e</td>
+<td>Expenses range for rating E</td>
+</tr>
+<tr>
+<td>f</td>
+<td>Expenses range for rating F</td>
+</tr>
+<tr>
+<td>g</td>
+<td>Expenses range for rating G</td>
 </tr>
 </tbody></table>
 <h1 id='errors'>Errors</h1>
