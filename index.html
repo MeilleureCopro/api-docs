@@ -327,24 +327,6 @@ The following image summarize the main results : there are 7 ratings from A to G
 <td>Flat surface.</td>
 </tr>
 <tr>
-<td>elevator</td>
-<td>boolean</td>
-<td>true</td>
-<td>Elevator in the building.</td>
-</tr>
-<tr>
-<td>lot_count</td>
-<td>number</td>
-<td>true</td>
-<td>Number of flat in the building.</td>
-</tr>
-<tr>
-<td>construction_year</td>
-<td>number</td>
-<td>true</td>
-<td>Construction year (approximative) of the building.</td>
-</tr>
-<tr>
 <td>zip_code</td>
 <td>string</td>
 <td>true</td>
@@ -363,6 +345,24 @@ The following image summarize the main results : there are 7 ratings from A to G
 <td>Text description of the flat.</td>
 </tr>
 <tr>
+<td>elevator</td>
+<td>boolean</td>
+<td>required if no description</td>
+<td>Elevator in the building.</td>
+</tr>
+<tr>
+<td>lot_count</td>
+<td>number</td>
+<td>required if no description</td>
+<td>Number of flat in the building.</td>
+</tr>
+<tr>
+<td>construction_year</td>
+<td>number</td>
+<td>required if no description</td>
+<td>Construction year (approximative) of the building.</td>
+</tr>
+<tr>
 <td>caretaker</td>
 <td>boolean</td>
 <td>required if no description</td>
@@ -376,7 +376,7 @@ The following image summarize the main results : there are 7 ratings from A to G
 </tr>
 <tr>
 <td>water_heating_type</td>
-<td>string</td>
+<td>required if no description</td>
 <td>false</td>
 <td>COLLECTIVE or INDIVIDUAL.</td>
 </tr>
