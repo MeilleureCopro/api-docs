@@ -97,15 +97,15 @@ Parameter | Type | Required | Description
 --------- | ------- | ------- | -----------
 expenses | number | true | Current building expenses.
 surface | number |true | Flat surface.
-elevator | boolean |true | Elevator in the building.
-lot_count | number |true| Number of flat in the building.
-construction_year | number | true | Construction year (approximative) of the building.
 zip_code | string | true | Insee code of the flat.
 insee_code | string | true if zip_code not present | Insee code of the flat.
 description | string | false | Text description of the flat.
+elevator | boolean |required if no description | Elevator in the building.
+lot_count | number |required if no description| Number of flat in the building.
+construction_year | number | required if no description | Construction year (approximative) of the building.
 caretaker| boolean |required if no description | Caretaker in the building.
 heating_type | string | required if no description | COLLECTIVE or INDIVIDUAL.
-water_heating_type | string |false | COLLECTIVE or INDIVIDUAL.
+water_heating_type | required if no description |false | COLLECTIVE or INDIVIDUAL.
 syndic_type | string |false | PRO or VOLUNTEER.
 green_space  | string | false | Size of green space: NONE, SMALL, NORMAL, BIG.
 parking_count | number |false | Flat parking count.
