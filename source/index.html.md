@@ -106,12 +106,17 @@ construction_year | number | required if no description | Construction year (app
 caretaker| boolean |required if no description | Caretaker in the building.
 heating_type | string | required if no description | COLLECTIVE or INDIVIDUAL.
 water_heating_type | required if no description |false | COLLECTIVE or INDIVIDUAL.
+water_meter | boolean| false | True if water meters are present in the building.
+heating_meter|boolean| false | True if heating meter are present on flat radiators.
 syndic_type | string |false | PRO or VOLUNTEER.
 green_space  | string | false | Size of green space: NONE, SMALL, NORMAL, BIG.
+swimming_pool| boolean|false | Swimming pool.
 parking_count | number |false | Flat parking count.
+underground_parking | boolean |false | True if parking is underground.
 floor_count | number |false | Building floor count.
 floor | number |false | Flat floor.
 room_count | number | false | Flat room count.
+resident_count|number|false | Number of resident in the flat.
 address | string | false | Address of the flat.
 latitude | number | false | Latitude of the flat.
 longitude | number | false | Longitude of the flat.
