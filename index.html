@@ -276,11 +276,11 @@ https://api.meilleurecopro.com
 The following image summarize the main results : there are 7 ratings from A to G and the expenses here are rate E.</p>
 
 <p><img src="images/label-example-small.png" title="Label example" alt="alt text" /></p>
-<h2 id='estimate-flat-expenses'>Estimate flat expenses</h2><pre class="highlight plaintext"><code>curl -X POST https://api.meilleurecopro.com/v1/building-expenses/estimate
-  -H "Authorization: Bearer JWT"
+<h2 id='estimate-flat-expenses'>Estimate flat expenses</h2><pre class="highlight plaintext"><code>curl -X POST https://api.meilleurecopro.com/v1/building-expenses/estimate \
+  -H "Authorization: Bearer JWT" \
   -d '{"address":"5 Parvis Alan Turing 75013 Paris", "surface": 50, "expenses": 2000,  \
   "elevator": true, "caretaker": false, "construction_year": 1900, "heating_type": "COLLECTIVE", \
-  "water_heating_type": "INDIVIDUAL", "zip_code": "75013"}'
+  "water_heating_type": "INDIVIDUAL", "zip_code": "75013", "lot_count": 10}'
 </code></pre>
 <blockquote>
 <p>The above command returns JSON structured like this:</p>
@@ -330,12 +330,6 @@ The following image summarize the main results : there are 7 ratings from A to G
 <td>zip_code</td>
 <td>string</td>
 <td>true</td>
-<td>Insee code of the flat.</td>
-</tr>
-<tr>
-<td>insee_code</td>
-<td>string</td>
-<td>true if zip_code not present</td>
 <td>Insee code of the flat.</td>
 </tr>
 <tr>
@@ -445,6 +439,12 @@ The following image summarize the main results : there are 7 ratings from A to G
 <td>number</td>
 <td>false </td>
 <td>Number of resident in the flat.</td>
+</tr>
+<tr>
+<td>insee_code</td>
+<td>string</td>
+<td>false</td>
+<td>Insee code of the flat.</td>
 </tr>
 <tr>
 <td>address</td>
