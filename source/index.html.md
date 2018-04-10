@@ -56,11 +56,11 @@ The following image summarize the main results : there are 7 ratings from A to G
 
 
 ```curl
-curl -X POST https://api.meilleurecopro.com/v1/building-expenses/estimate
-  -H "Authorization: Bearer JWT"
+curl -X POST https://api.meilleurecopro.com/v1/building-expenses/estimate \
+  -H "Authorization: Bearer JWT" \
   -d '{"address":"5 Parvis Alan Turing 75013 Paris", "surface": 50, "expenses": 2000,  \
   "elevator": true, "caretaker": false, "construction_year": 1900, "heating_type": "COLLECTIVE", \
-  "water_heating_type": "INDIVIDUAL", "zip_code": "75013"}'
+  "water_heating_type": "INDIVIDUAL", "zip_code": "75013", "lot_count": 10}'
 ```
 
 > The above command returns JSON structured like this:
@@ -98,7 +98,6 @@ Parameter | Type | Required | Description
 expenses | number | true | Current building expenses.
 surface | number |true | Flat surface.
 zip_code | string | true | Insee code of the flat.
-insee_code | string | true if zip_code not present | Insee code of the flat.
 description | string | false | Text description of the flat.
 elevator | boolean |required if no description | Elevator in the building.
 lot_count | number |required if no description| Number of flat in the building.
@@ -117,6 +116,7 @@ floor_count | number |false | Building floor count.
 floor | number |false | Flat floor.
 room_count | number | false | Flat room count.
 resident_count|number|false | Number of resident in the flat.
+insee_code | string | false | Insee code of the flat.
 address | string | false | Address of the flat.
 latitude | number | false | Latitude of the flat.
 longitude | number | false | Longitude of the flat.
