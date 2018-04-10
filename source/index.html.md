@@ -57,6 +57,7 @@ The following image summarize the main results : there are 7 ratings from A to G
 
 ```curl
 curl -X POST https://api.meilleurecopro.com/v1/building-expenses/estimate \
+  -H "Content-Type: application/json" \
   -H "Authorization: Bearer JWT" \
   -d '{"address":"5 Parvis Alan Turing 75013 Paris", "surface": 50, "expenses": 2000,  \
   "elevator": true, "caretaker": false, "construction_year": 1900, "heating_type": "COLLECTIVE", \
